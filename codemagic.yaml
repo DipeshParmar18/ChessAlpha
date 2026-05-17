@@ -9,11 +9,13 @@ workflows:
       - name: Set Android SDK location
         script: |
           echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/local.properties"
-      - name: Build debug APK
+      - name: Install Gradle and build APK
         script: |
           cd $CM_BUILD_DIR
-          chmod +x gradlew
-          ./gradlew assembleDebug --stacktrace
+          curl -L https://services.gradle.org/distributions/gradle-8.2-bin.zip -o gradle.zip
+          unzip -q gradle.zip
+          export PATH=$CM_BUILD_DIR/gradle-8.2/bin:$PATH
+          gradle assembleDebug --stacktrace
     artifacts:
       - app/build/outputs/apk/debug/app-debug.apk
     publishing:
